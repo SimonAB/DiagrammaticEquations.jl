@@ -2,7 +2,7 @@
 using .decapodes
 # Explicit imports for Julia 1.12 compatibility
 import .decapodes: Judgement, Term, Equation, Eq
-# Note: Eq is a constructor function, not a type, but we import it explicitly for Julia 1.12 compatibility
+# Note: Eq is a constructor variant of the Equation sum type (and a valid match pattern); we import it explicitly for Julia 1.12 compatibility
 
 term(s::Symbol) = Var(normalize_unicode(s))
 term(s::Number) = Lit(Symbol(s))

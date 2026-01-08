@@ -1,7 +1,7 @@
 using DiagrammaticEquations
 using Catlab.CategoricalAlgebra
 using ACSets
-# Note: decapodes is a local module defined in language.jl, not the Decapodes package
+# Note: decapodes is a local module defined via @intertypes in language.jl, not the Decapodes package
 
 function decapodes.Term(s::SummationDecapode)
   # s = expand_operators(s)
