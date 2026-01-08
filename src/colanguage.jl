@@ -16,11 +16,11 @@ function decapodes.Term(s::SummationDecapode)
     y = Var(s[op, [:tgt, :name]])
     f = s[op, :op1]
     if f == :∂ₜ
-      decapodes.Equation(y, Tan(x))
+      decapodes.Eq(y, Tan(x))
     elseif typeof(f) == Vector{Symbol}
-      decapodes.Equation(y, AppCirc1(f, x))
+      decapodes.Eq(y, AppCirc1(f, x))
     else
-      decapodes.Equation(y, App1(f, x))
+      decapodes.Eq(y, App1(f, x))
     end
   end
 
@@ -29,12 +29,12 @@ function decapodes.Term(s::SummationDecapode)
     y = Var(s[op, [:proj2, :name]])
     z = Var(s[op, [:res, :name]])
     f = s[op, :op2]
-    decapodes.Equation(z, App2(f, x, y))
+    decapodes.Eq(z, App2(f, x, y))
   end
 
   sums = map(parts(s, :Σ)) do σ
     terms = map(Var, s[incident(s, σ, :summation), [:summand, :name]])
-    decapodes.Equation(Var(s[σ, [:sum,:name]]), Plus(terms))
+    decapodes.Eq(Var(s[σ, [:sum,:name]]), Plus(terms))
   end
   DiagrammaticEquations.DecaExpr(judgements, vcat(op1s, op2s, sums))
 end

@@ -1,8 +1,8 @@
 @intertypes "decapodes.it" module decapodes end
 using .decapodes
-# Explicit imports for Julia 1.12 compatibility  
-import .decapodes: Judgement, Term, Equation
-# Note: Eq is a constructor function, not a type, so we use it directly
+# Explicit imports for Julia 1.12 compatibility
+import .decapodes: Judgement, Term, Equation, Eq
+# Note: Eq is a constructor function, not a type, but we import it explicitly for Julia 1.12 compatibility
 
 term(s::Symbol) = Var(normalize_unicode(s))
 term(s::Number) = Lit(Symbol(s))
@@ -38,7 +38,7 @@ function parse_decapode(expr::Expr)
             Expr(:(::), a::Symbol, b) => decapodes.Judgement(a, b.args[1], b.args[2])
             Expr(:(::), a::Expr, b) => map(sym -> decapodes.Judgement(sym, b.args[1], b.args[2]), a.args)
 
-            Expr(:call, :(==), lhs, rhs) => Eq(term(lhs), term(rhs))
+            Expr(:call, :(==), lhs, rhs) => decapodes.Eq(term(lhs), term(rhs))
             _ => error("The line $line is malformed")
         end
     end |> skipmissing |> Base.collect
@@ -48,7 +48,7 @@ function parse_decapode(expr::Expr)
       @match s begin
         ::decapodes.Judgement => push!(judges, s)
         ::Vector{decapodes.Judgement} => append!(judges, s)
-        ::Eq => push!(eqns, s)
+        ::decapodes.Eq => push!(eqns, s)
         _ => error("Statement containing $s of type $(typeof(s)) was not added.")
       end
     end
@@ -120,9 +120,9 @@ reduce_term!(t::Term, d::AbstractDecapode, syms::Dict{Symbol, Int}) =
     end
   end
 
-function eval_eq!(eq::decapodes.Equation, d::AbstractDecapode, syms::Dict{Symbol, Int}, deletions::Vector{Int}) 
+function eval_eq!(eq::decapodes.Equation, d::AbstractDecapode, syms::Dict{Symbol, Int}, deletions::Vector{Int})
   @match eq begin
-    Eq(t1, t2) => begin
+    decapodes.Eq(t1, t2) => begin
       lhs_ref = reduce_term!(t1,d,syms)
       rhs_ref = reduce_term!(t2,d,syms)
 
