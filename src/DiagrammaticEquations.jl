@@ -56,6 +56,9 @@ DerivOp = Symbol("∂ₜ")
 append_dot(s::Symbol) = Symbol(string(s)*'\U0307')
 
 include("acset.jl")
+# Explicit imports for constructor extensions (Julia 1.12 compatibility)
+# Must come after acset.jl where decapodeacset module is defined
+import .decapodeacset: Decapode, SummationDecapode
 include("language.jl")
 include("Parser.jl")
 include("composition.jl")
